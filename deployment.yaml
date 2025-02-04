@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apps
+spec:
+  selector:
+    matchLabels:
+      app: apps
+  template:
+    metadata:
+      labels:
+        app: apps
+    spec:
+
+      volumes:
+        - name: config-vol
+          emptyDir: {}
+          
+      containers:     
+      - name: busybox
+        image: busybox:latest
+        ports:
+        - containerPort: 80
+        command: 
+          - sleep 
+          - '3600'
+          # - while true;
+          # - do echo test >> /config/log_test;
+          # - sleep 5; 
+          # - done
+
+        volumeMounts: 
+          - name: config-vol
+            mountPath: /config
+
+      - name: multitool
+        image: wbitt/network-multitool
+        ports:
+        - containerPort: 81
+        volumeMounts: 
+          - name: config-vol
+            mountPath: /config
